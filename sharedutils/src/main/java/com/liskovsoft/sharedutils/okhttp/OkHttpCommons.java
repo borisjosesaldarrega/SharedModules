@@ -31,7 +31,6 @@ import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.security.KeyStore;
-import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -209,46 +208,8 @@ final class OkHttpCommons {
      */
     @SuppressWarnings("deprecation")
     private static void configureToIgnoreCertificate(OkHttpClient.Builder builder) {
-        if (VERSION.SDK_INT > 24) { // up to Android 7.0 (NOTE: 7.1 works fine)
-            return;
-        }
-
-        Log.w(TAG, "Ignore Ssl Certificate");
-        try {
-
-            // Create a trust manager that does not validate certificate chains
-            final TrustManager[] trustAllCerts = new TrustManager[] {
-                    new X509TrustManager() {
-                        @Override
-                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType)
-                                throws CertificateException {
-                        }
-
-                        @Override
-                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType)
-                                throws CertificateException {
-                        }
-
-                        @Override
-                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                            return new java.security.cert.X509Certificate[]{};
-                        }
-                    }
-            };
-
-            // Install the all-trusting trust manager
-            //final SSLContext sslContext = SSLContext.getInstance("SSL");
-            final SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
-            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-            // Create an ssl socket factory with our all-trusting manager
-            final SSLSocketFactory sslSocketFactory = new Tls12SocketFactory(sslContext.getSocketFactory());
-
-            //builder.sslSocketFactory(sslSocketFactory, (X509TrustManager)trustAllCerts[0]);
-            builder.sslSocketFactory(sslSocketFactory);
-            //builder.hostnameVerifier((hostname, session) -> true);
-        } catch (Exception e) {
-            Log.w(TAG, "Exception while configuring IgnoreSslCertificate: " + e, e);
-        }
+        // Intentionally left as a no-op. The laboratory build always relies on
+        // the platform trust store and never accepts arbitrary certificates.
     }
 
     /**

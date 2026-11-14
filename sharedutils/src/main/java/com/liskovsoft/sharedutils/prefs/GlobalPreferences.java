@@ -87,11 +87,11 @@ final public class GlobalPreferences extends SharedPreferencesBase {
     //}
 
     public String getMediaServiceAccountData() {
-        return getData(MEDIA_SERVICE_ACCOUNT_DATA);
+        return getSecureData(MEDIA_SERVICE_ACCOUNT_DATA);
     }
 
     public void setMediaServiceAccountData(String data) {
-        setData(MEDIA_SERVICE_ACCOUNT_DATA, data);
+        setSecureData(MEDIA_SERVICE_ACCOUNT_DATA, data);
     }
 
     //public String getOAuth2AccountData() {
@@ -103,11 +103,11 @@ final public class GlobalPreferences extends SharedPreferencesBase {
     //}
 
     public String getOAuth2AccountData() {
-        return getData(OAUTH2_ACCOUNT_DATA);
+        return getSecureData(OAUTH2_ACCOUNT_DATA);
     }
 
     public void setOAuth2AccountData(String data) {
-        setData(OAUTH2_ACCOUNT_DATA, data);
+        setSecureData(OAUTH2_ACCOUNT_DATA, data);
     }
 
     //public String getMediaServiceData() {

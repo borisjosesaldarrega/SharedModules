@@ -165,6 +165,43 @@ public class SharedPreferencesBase {
         }
     }
 
+    final protected String getSecureData(String key) {
+        String stored = getData(key);
+        if (stored == null) {
+            return null;
+        }
+
+        if (SecureDataCodec.isEncrypted(stored)) {
+            return SecureDataCodec.decrypt(getContext(), stored);
+        }
+
+        if (!SecureDataCodec.isSupported()) {
+            Log.e(TAG, "Secure account storage requires Android 6.0 or newer");
+            return null;
+        }
+
+        // One-time migration from the original app-private plaintext format.
+        String encrypted = SecureDataCodec.encrypt(getContext(), stored);
+        if (encrypted != null) {
+            setData(key, encrypted);
+            return stored;
+        }
+
+        return null;
+    }
+
+    final protected void setSecureData(String key, String data) {
+        if (data == null) {
+            setData(key, null);
+            return;
+        }
+
+        String encrypted = SecureDataCodec.encrypt(getContext(), data);
+        if (encrypted != null) {
+            setData(key, encrypted);
+        }
+    }
+
     private File getStorageFile(String key) {
         String prefsDir = getPrefsDir();
 
